@@ -8,7 +8,6 @@ import lombok.Data;
 
 @Data
 public class SignUpResponse {
-	SignUpStatus signUpStatus;
-	UserCore registredUser;
 	CustomError error;
+	SignUpStatus signUpStatus;
 }

@@ -174,7 +174,6 @@ public class AuthenticationController {
 				// Creating the SignUp response
 				SignUpResponse signUpResponse = new SignUpResponse();
 				signUpResponse.setSignUpStatus(SignUpStatus.CREATED);
-				signUpResponse.setRegistredUser(registredUser);
 				// Returning after Appending the response to the body of the HttpResponse
 				return ResponseEntity.accepted().body(signUpResponse);
 
@@ -187,7 +186,7 @@ public class AuthenticationController {
 		} catch (Exception e) {
 			log.error(e.getClass().getName() + " | Message " + e.getMessage());
 			SignUpResponse signUpResponse = new SignUpResponse();
-			signUpResponse.setSignUpStatus(SignUpStatus.ERROR);
+			signUpResponse.setSignUpStatus(SignUpStatus.NOT_CREATED);
 			CustomError error = new CustomError();
 			if (e instanceof UserSignUpException) {
 				error.setCode(((UserSignUpException) e).getCode());
