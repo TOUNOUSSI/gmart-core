@@ -146,7 +146,6 @@ public class AuthenticationController {
 	public ResponseEntity<?> signup(@Valid @RequestBody SignUpRequest newUser, HttpServletRequest request,
 			HttpServletResponse response) {
 		try {
-			if (request.getHeader("Authorization").toString().contains("GMART_AUTHORIZATION")) {
 				log.info(newUser.toString());
 
 				// Successful sign up request
@@ -169,7 +168,7 @@ public class AuthenticationController {
 				userTobeRegistred.setRoles(roles);
 
 				// Storing the object into database
-				UserCore registredUser = authService.save(userTobeRegistred);
+				authService.save(userTobeRegistred);
 
 				// Creating the SignUp response
 				SignUpResponse signUpResponse = new SignUpResponse();
@@ -177,11 +176,6 @@ public class AuthenticationController {
 				// Returning after Appending the response to the body of the HttpResponse
 				return ResponseEntity.accepted().body(signUpResponse);
 
-			} else {
-				log.error("You are not authorized to acces this resource");
-
-				throw new Exception("You are not authorized to acces this resource");
-			}
 
 		} catch (Exception e) {
 			log.error(e.getClass().getName() + " | Message " + e.getMessage());
