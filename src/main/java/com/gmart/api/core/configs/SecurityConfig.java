@@ -71,7 +71,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/h2-console/**", "/h2-console", "/authentication/logout", "/authentication/login")
 				.permitAll().antMatchers(org.springframework.http.HttpMethod.OPTIONS, "/service/**").permitAll()
 				.antMatchers(HttpMethod.POST, "/authentication/signin", "/authentication/signup").permitAll()
-				.antMatchers(HttpMethod.GET, "/messenger/add-new-friend/{username}","/messenger/myfriends").permitAll()
+				.antMatchers(HttpMethod.GET, "/messenger/add-new-friend/{username}","/messenger/myfriends","/account/accounts").permitAll()
 				.anyRequest().authenticated().and()
 				.logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll().and().csrf().disable(); // Disabling
 																															// the
