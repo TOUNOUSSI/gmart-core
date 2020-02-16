@@ -46,20 +46,21 @@ public class FriendController {
 			Long userId = jwtProvider.getUserIdFromJWT(request.getHeader("Token"));
 			user = this.authService.loadUserById(userId);
 			log.info("Authenticated user found : " + username);
+			if (user != null) {
+				friendToBeAdd = this.authService.loadUserByUsername(username);
+				if (friendToBeAdd != null) {
+					log.info("Friend user to be added : " + friendToBeAdd);
+					log.info("Founded user in the session " + user.toString());
+					this.authService.addUserToFriendList(user, friendToBeAdd);
+					log.info("Updating friend list finished");
+					log.info("######### FRIEND LIST of " + user.getUsername() + " #########");
+					user.getFriends().forEach(f -> {
+						log.info("Friend  : " + f.toString());
+					});
 
-			friendToBeAdd = this.authService.loadUserByUsername(username);
-			if (friendToBeAdd != null) {
-				log.info("Friend user to be added : " + friendToBeAdd);
-				log.info("Founded user in the session " + user.toString());
-				this.authService.addUserToFriendList(user, friendToBeAdd);
-				log.info("Updating friend list finished");
-				log.info("######### FRIEND LIST of " + user.getUsername() + " #########");
-				user.getFriends().forEach(f -> {
-					log.info("Friend  : " + f.toString());
-				});
-
-			} else {
-				return false;
+				} else {
+					return false;
+				}
 			}
 
 		} catch (Exception e) {
@@ -72,12 +73,12 @@ public class FriendController {
 
 	@GetMapping("/myfriends")
 	@ResponseBody
-	public List<UserCore> getFriendList( HttpServletRequest request,HttpServletResponse response) {
+	public List<UserCore> getFriendList(HttpServletRequest request, HttpServletResponse response) {
 
 		List<UserCore> friends = null;
 		UserCore user = null;
 		try {
-			log.info("get Friend List started here "+request.getHeader("Token"));
+			log.info("get Friend List started here " + request.getHeader("Token"));
 			Long userId = jwtProvider.getUserIdFromJWT(request.getHeader("Token"));
 			user = this.authService.loadUserById(userId);
 			friends = user.getFriends().stream().distinct().collect(Collectors.toList());
