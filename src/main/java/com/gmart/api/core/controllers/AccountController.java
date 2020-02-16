@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.gmart.api.core.entities.UserCore;
 import com.gmart.api.core.services.AccountService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,7 @@ public class AccountController {
 
 	@GetMapping("/accounts")
 	@ResponseBody
-	public List<?> getAllAccounts( HttpServletRequest request,HttpServletResponse response) {
+	public List<UserCore> getAllAccounts( HttpServletRequest request,HttpServletResponse response) {
 		return this.accountService.getAll();
 	}
 }
