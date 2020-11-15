@@ -8,12 +8,12 @@ import lombok.Data;
 
 @Data
 public class UserInfo {
-
+	private Long id;
 	private String email;
 	private String firstname;
-	private Long id;
 	private String lastname;
 	private String phone;
 	private Set<Role> roles;
-	private String username;
+	private String username;	
+	private String pseudoname;
 }

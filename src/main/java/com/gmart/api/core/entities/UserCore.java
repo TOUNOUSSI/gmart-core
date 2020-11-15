@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -37,21 +38,22 @@ public class UserCore implements UserDetails, Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@Column(unique = true, nullable = false)
-	private String email;
-	private String firstname;
-
-	@JsonIgnore
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinTable(name = "user_friends", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "friend_id", referencedColumnName = "id"))
-
-	private List<UserCore> friends = new ArrayList<>();
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private String lastname;
+	private String firstname;
+
+	@Column(unique = true, nullable = false)
+	private String email;
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinTable(name = "user_friends", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "friend_id", referencedColumnName = "id"))
+	private List<UserCore> friends = new ArrayList<>();
+
 	@JsonIgnore
 	private String password;
+	
 	private String phone;
 
 	@OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
@@ -60,6 +62,11 @@ public class UserCore implements UserDetails, Serializable {
 
 	@Column(unique = true, nullable = false)
 	private String username;
+	
+	
+	@OneToOne
+	@JoinColumn(name = "profile_id",referencedColumnName = "id")
+	private Profile profile;
 
 	@Override
 	@JsonIgnore
