@@ -21,7 +21,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.gmart.api.core.security.JwtAuthenticationEntryPoint;
 import com.gmart.api.core.security.JwtAuthenticationFilter;
-import com.gmart.api.core.services.AuthService;
+import com.gmart.api.core.services.AccountService;
 
 
 /**
@@ -37,7 +37,7 @@ import com.gmart.api.core.services.AuthService;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-	AuthService authService;
+	private AccountService accountService;
 
     @Value("${app.jwtSecret}")
     public String secret;
@@ -54,7 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder
-				.userDetailsService((UserDetailsService) authService)
+				.userDetailsService((UserDetailsService) accountService)
                 .passwordEncoder(passwordEncoder());
     }
 
@@ -70,8 +70,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.permitAll()
 				.antMatchers("/h2-console/**", "/h2-console", "/authentication/logout", "/authentication/login")
 				.permitAll().antMatchers(org.springframework.http.HttpMethod.OPTIONS, "/service/**").permitAll()
-				.antMatchers(HttpMethod.POST, "/authentication/signin", "/authentication/signup").permitAll()
-				.antMatchers(HttpMethod.GET, "/messenger/add-new-friend/{username}","/messenger/myfriends","/account/accounts").permitAll()
+				.antMatchers(HttpMethod.POST, "/authentication/signin", "/authentication/signup","/profile/update-profile-picture","/profile/update-profile-cover").permitAll()
+				.antMatchers(HttpMethod.GET, "/friend/myfriends","/account/accounts").permitAll()
+				.antMatchers(HttpMethod.GET, "/friend/find-friend/{criteria}","/friend/are-we-already-friends/{pseudoname}","/profile/find-my-profile","/profile/find-profile/{pseudoname}").permitAll()
+				.antMatchers(HttpMethod.PUT, "/friend/add-new-friend/{pseudoname}").permitAll()
 				.anyRequest().authenticated().and()
 				.logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll().and().csrf().disable(); // Disabling
 																															// the
