@@ -15,14 +15,19 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.gmart.api.core.entities.UserCore;
-import com.gmart.api.core.services.AuthService;
+import com.gmart.api.core.services.AccountService;
+
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Created by TOUNOUSSI Youssef on 02/05/18.
  */
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
-	private AuthService authService;// return UserPrincipal.create(user);
+	private AccountService accountService;// return UserPrincipal.create(user);
 
 	@Autowired
     private JwtTokenProvider tokenProvider;
@@ -40,14 +45,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     and create the UserDetails object by parsing those claims from the JWT.
                     That would avoid the following database hit. It's completely up to you.
                  */
-				UserCore userDetails = authService.loadUserById(userId);
+				UserCore userDetails = this.accountService.loadUserById(userId);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception ex) {
-            logger.error("Impossible de définir l'authentification de l'utilisateur dans le contexte de sécurité", ex);
+            log.error("Impossible de définir l'authentification de l'utilisateur dans le contexte de sécurité", ex);
         }
 
         filterChain.doFilter(request, response);
