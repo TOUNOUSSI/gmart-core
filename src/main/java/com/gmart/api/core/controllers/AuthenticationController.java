@@ -139,7 +139,7 @@ public class AuthenticationController {
 				error.setMessage(((UserSignInException) e).getMessage());
 			} else {
 				error.setCode("500");
-				error.setMessage(((UserSignInException) e).getMessage());
+				error.setMessage(e.getMessage());
 			}
 			signInResponse.setError(error);
 
