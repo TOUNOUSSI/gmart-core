@@ -13,7 +13,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.gmart.api.core.entities.enums.RoleName;
+import com.gmart.common.enums.core.RoleName;
 
 import lombok.Data;
 

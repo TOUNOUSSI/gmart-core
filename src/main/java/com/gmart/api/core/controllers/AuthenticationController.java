@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.gmart.api.core.entities.Profile;
 import com.gmart.api.core.entities.Role;
 import com.gmart.api.core.entities.UserCore;
-import com.gmart.api.core.entities.enums.RoleName;
 import com.gmart.api.core.exceptions.UserSignInException;
 import com.gmart.api.core.exceptions.UserSignUpException;
 import com.gmart.api.core.repositories.ProfileRepository;
@@ -44,6 +43,7 @@ import com.gmart.api.messages.responses.SignUpResponse;
 import com.gmart.api.messages.responses.UserInfo;
 import com.gmart.api.messages.responses.enums.LoginStatus;
 import com.gmart.api.messages.responses.enums.SignUpStatus;
+import com.gmart.common.enums.core.RoleName;
 
 import lombok.extern.slf4j.Slf4j;
 

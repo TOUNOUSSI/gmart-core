@@ -9,8 +9,6 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import com.gmart.api.core.entities.enums.PictureTypeEnum;
-
 import lombok.Data;
 
 @Entity

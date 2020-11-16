@@ -16,8 +16,7 @@ import javax.validation.constraints.Null;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import com.gmart.api.core.entities.enums.PictureTypeEnum;
-import com.gmart.api.core.entities.enums.PostType;
+import com.gmart.common.enums.core.PostType;
 
 import lombok.Data;
 

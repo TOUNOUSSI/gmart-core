@@ -8,9 +8,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.gmart.api.core.entities.Picture;
 import com.gmart.api.core.entities.Profile;
-import com.gmart.api.core.entities.enums.PictureTypeEnum;
 import com.gmart.api.core.exceptions.FileStorageException;
 import com.gmart.api.core.repositories.ProfileRepository;
+import com.gmart.common.enums.core.PictureType;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +35,7 @@ public class ProfileService {
 		Picture picture = null;
 		try {
 			picture = this.fileStorageService.storeFile(file);
-			picture.setPictureType(PictureTypeEnum.COVER_PICTURE);
+			picture.setPictureType(PictureType.COVER_PICTURE);
 			profile.getPictures().add(picture);
 			
 			this.profileRepository.saveAndFlush(profile);
@@ -53,7 +53,7 @@ public class ProfileService {
 		Picture picture = null;
 		try {
 			picture = this.fileStorageService.storeFile(file);
-			picture.setPictureType(PictureTypeEnum.PROFILE_PICTURE);
+			picture.setPictureType(PictureType.PROFILE_PICTURE);
 			profile.getPictures().add(picture);
 			
 			this.profileRepository.saveAndFlush(profile);

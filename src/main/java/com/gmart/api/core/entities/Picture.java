@@ -15,7 +15,7 @@ import javax.validation.constraints.Null;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.gmart.api.core.entities.enums.PictureTypeEnum;
+import com.gmart.common.enums.core.PictureType;
 
 import lombok.Data;
 
@@ -31,7 +31,7 @@ public class Picture {
 
 	private String fileName;
 	
-	private PictureTypeEnum pictureType;
+	private PictureType pictureType;
 
     private String fileType;
 
