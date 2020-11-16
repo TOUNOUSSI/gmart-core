@@ -1,5 +1,6 @@
 package com.gmart.api.core.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -98,12 +100,25 @@ public class FriendController {
 	@ResponseBody
 	public List<UserCore> getAllSearchAccountMatches(@PathVariable String criteria, HttpServletRequest request,
 			HttpServletResponse response) {
-
-		log.info("Find matching accounts for criteria : " + criteria);
-		Long userId = jwtProvider.getUserIdFromJWT(request.getHeader("Token"));
-		final UserCore user = this.accountService.loadUserById(userId);
-		return this.accountService.getMatchingAccountList(criteria).stream().filter(usr -> !usr.getEmail().equals(user.getEmail()))
-				  .collect(Collectors.toList());
+		List<UserCore> matchingUsersCores =null;
+		try {
+			log.info("Find matching accounts for criteria : " + criteria);
+			matchingUsersCores = new ArrayList<>();
+			if(!StringUtils.isEmpty(criteria)) {
+				matchingUsersCores = this.accountService.getMatchingAccountList(criteria);
+				if(!CollectionUtils.isEmpty(matchingUsersCores)) {
+					Long userId = jwtProvider.getUserIdFromJWT(request.getHeader("Token"));
+					final UserCore user = this.accountService.loadUserById(userId);
+					List<UserCore> filtredList =  matchingUsersCores.stream().filter(usr -> !usr.getEmail().equals(user.getEmail()))
+							  .collect(Collectors.toList());
+					return matchingUsersCores;
+				}
+			}
+		}catch (Exception e) {
+			log.error(e.getLocalizedMessage());
+		}
+		
+			return  matchingUsersCores;
 	}
 
 	@GetMapping("/are-we-already-friends/{pseudoname}")

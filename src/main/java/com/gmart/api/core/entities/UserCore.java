@@ -46,7 +46,8 @@ public class UserCore implements UserDetails, Serializable {
 
 	@Column(unique = true, nullable = false)
 	private String email;
-
+	
+	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinTable(name = "user_friends", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "friend_id", referencedColumnName = "id"))
 	private List<UserCore> friends = new ArrayList<>();
