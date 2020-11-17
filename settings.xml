@@ -17,7 +17,7 @@ Setting used in heroku cloud platform to acces different repositories (Github, M
       <pluginGroups/>
      <servers>
     	<server>
-       		<id>github</id>
+       		<id>GITHUB</id>
        		<username>TOUNOUSSI</username>
        		<password>8f9bca4b8e664e74e994185d19796c1921bbb8d4</password>
        	</server>
@@ -29,15 +29,12 @@ Setting used in heroku cloud platform to acces different repositories (Github, M
 		
   <profiles>
     <profile>
-      <id>GITHUB</id>
-      <repositories>
+      <id>JITPACK</id>
+	  <repositories>
 	    <repository>
-			<id>GITHUB-GMART-API-REPO</id>
-			<url>https://raw.github.com/TOUNOUSSI/gmart-api/mvn-repo/</url>
-			<snapshots><enabled>true</enabled>
-            <updatePolicy>always</updatePolicy>
-        </snapshots>
-       </repository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
+		</repository>
      </repositories>
     </profile>
 	
@@ -45,6 +42,7 @@ Setting used in heroku cloud platform to acces different repositories (Github, M
 		  <id>MAVEN-CENTRAL</id>
 		 <!-- Override the repository (and pluginRepository) "central" from the Maven Super POM -->
 		  <repositories>
+		  
 			<repository>
 			  <id>MAVEN-CNT-REPO-1</id>
 			  <url>https://repo1.maven.org/maven2</url>
@@ -73,7 +71,7 @@ Setting used in heroku cloud platform to acces different repositories (Github, M
   </profiles>
   
        <activeProfiles>
-      		 <activeProfile>GITHUB</activeProfile>
-			 <activeProfile>MAVEN-CENTRAL</activeProfile>
+      		 <activeProfile>JITPACK</activeProfile>
+			 <!-- <activeProfile>MAVEN-CENTRAL</activeProfile> -->
        </activeProfiles>
 </settings>
