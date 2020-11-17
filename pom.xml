@@ -101,39 +101,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
- <activeProfiles>
-    <activeProfile>github</activeProfile>
-  </activeProfiles>
-
-  <profiles>
-    <profile>
-      <id>github</id>
-      <repositories>
-        <repository>
-          <id>central</id>
-          <url>https://repo1.maven.org/maven2</url>
-          <releases><enabled>true</enabled></releases>
-          <snapshots><enabled>true</enabled></snapshots>
-        </repository>
-       <repository>
-        <id>gmart-api-mvn-repo</id>
-        <url>https://raw.github.com/TOUNOUSSI/gmart-api/mvn-repo/</url>
-        <snapshots>
-            <enabled>true</enabled>
-            <updatePolicy>always</updatePolicy>
-        </snapshots>
-       </repository>
-     </repositories>
-    </profile>
-  </profiles>
-  
-  <servers>
-    <server>
-      <id>github</id>
-      <username>TOUNOUSSI</username>
-      <password>8f9bca4b8e664e74e994185d19796c1921bbb8d4</password>
-    </server>
-  </servers>
-
 </project>
