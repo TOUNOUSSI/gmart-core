@@ -7,6 +7,7 @@
         <groupId>com.gmart.api</groupId>
         <artifactId>gmart-api</artifactId>
         <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../gmart-api/pom.xml</relativePath>
     </parent>
     
 	<groupId>com.gmart.core</groupId>
