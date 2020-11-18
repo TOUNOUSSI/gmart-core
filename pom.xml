@@ -3,62 +3,74 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	 <parent>
-        <groupId>com.github.TOUNOUSSI</groupId>
-        <artifactId>gmart-api</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
-    </parent>
-    
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.2.1.RELEASE</version>
+		<relativePath></relativePath>
+	</parent>
+
 	<groupId>com.gmart.core</groupId>
 	<artifactId>gmart-core</artifactId>
 	<name>gmart-core</name>
+	<version>0.0.1-SNAPSHOT</version>
 	<description>GMART core project</description>
 
 	<properties>
 		<jjwt.version>0.9.0</jjwt.version>
 	</properties>
 
+	<!-- Add GMART-Common library -->
+	<repositories>
+		<repository>
+			<id>local-repository</id>
+			<url>file://${project.basedir}/repository</url>
+		</repository>
+	</repositories>
+
+
 	<dependencies>
 		<dependency>
-			<groupId>com.github.TOUNOUSSI</groupId>
-			<artifactId>gmart-api</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-	    </dependency>
-		
-		<dependency>
-			<groupId>com.github.TOUNOUSSI</groupId>
+			<groupId>com.gmart.common</groupId>
 			<artifactId>gmart-common</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-jasper</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-web</artifactId>
 		</dependency>
-		 <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -106,11 +118,11 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+
 	<distributionManagement>
-			<repository>
-				<id>jitpack.io</id>
-				<url>https://jitpack.io</url>
-			</repository>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
 	</distributionManagement>
 </project>
