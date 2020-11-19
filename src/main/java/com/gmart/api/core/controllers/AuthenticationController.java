@@ -8,18 +8,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
-import org.springframework.context.annotation.Scope;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -127,7 +125,6 @@ public class AuthenticationController {
 			}
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body(signInResponse);
 
-
 		} catch (Exception e) {
 			log.error("AuthenticationController->Signin | Message : " + e.getMessage());
 			SignInResponse signInResponse = new SignInResponse();
@@ -152,45 +149,44 @@ public class AuthenticationController {
 	public ResponseEntity<?> signup(@Valid @RequestBody SignUpRequest newUser, HttpServletRequest request,
 			HttpServletResponse response) {
 		try {
-				log.info(newUser.toString());
+			log.info(newUser.toString());
 
-				// Successful sign up request
-				UserCore userTobeRegistred = new UserCore();
-				userTobeRegistred.setFirstname(newUser.getFirstname());
-				userTobeRegistred.setLastname(newUser.getLastname());
-				userTobeRegistred.setPassword(passwordEncoder.encode(newUser.getPassword()));
-				userTobeRegistred.setPhone(newUser.getPhone());
-				userTobeRegistred.setUsername(newUser.getUsername());
-				userTobeRegistred.setEmail(newUser.getEmail());
-				
-				//setting the profile
-				Profile profile = new Profile();
-                profile.setPseudoname(newUser.getEmail().split("@")[0]);
-                profile.setFirstname(newUser.getFirstname());
-                profile.setLastname(newUser.getLastname());
-                profile.setPhone(newUser.getPhone());
-                
-                profileRepository.saveAndFlush(profile);
-				userTobeRegistred.setProfile(profile);
-				// To be modified, just for test issue
-				Set<Role> roles = new HashSet<Role>();
-				Role user_role = new Role();
-				Role admin_role = new Role();
-				user_role.setName(RoleName.USER);
-				admin_role.setName(RoleName.ADMIN);
-				roles.add(user_role);
-				roles.add(admin_role);
-				userTobeRegistred.setRoles(roles);
+			// Successful sign up request
+			UserCore userTobeRegistred = new UserCore();
+			userTobeRegistred.setFirstname(newUser.getFirstname());
+			userTobeRegistred.setLastname(newUser.getLastname());
+			userTobeRegistred.setPassword(passwordEncoder.encode(newUser.getPassword()));
+			userTobeRegistred.setPhone(newUser.getPhone());
+			userTobeRegistred.setUsername(newUser.getUsername());
+			userTobeRegistred.setEmail(newUser.getEmail());
 
-				// Storing the object into database
-				accountService.save(userTobeRegistred);
+			// setting the profile
+			Profile profile = new Profile();
+			profile.setPseudoname(newUser.getEmail().split("@")[0]);
+			profile.setFirstname(newUser.getFirstname());
+			profile.setLastname(newUser.getLastname());
+			profile.setPhone(newUser.getPhone());
 
-				// Creating the SignUp response
-				SignUpResponse signUpResponse = new SignUpResponse();
-				signUpResponse.setSignUpStatus(SignUpStatus.CREATED);
-				// Returning after Appending the response to the body of the HttpResponse
-				return ResponseEntity.accepted().body(signUpResponse);
+			profileRepository.saveAndFlush(profile);
+			userTobeRegistred.setProfile(profile);
+			// To be modified, just for test issue
+			Set<Role> roles = new HashSet<Role>();
+			Role user_role = new Role();
+			Role admin_role = new Role();
+			user_role.setName(RoleName.USER);
+			admin_role.setName(RoleName.ADMIN);
+			roles.add(user_role);
+			roles.add(admin_role);
+			userTobeRegistred.setRoles(roles);
 
+			// Storing the object into database
+			accountService.save(userTobeRegistred);
+
+			// Creating the SignUp response
+			SignUpResponse signUpResponse = new SignUpResponse();
+			signUpResponse.setSignUpStatus(SignUpStatus.CREATED);
+			// Returning after Appending the response to the body of the HttpResponse
+			return ResponseEntity.accepted().body(signUpResponse);
 
 		} catch (Exception e) {
 			log.error(e.getClass().getName() + " | Message " + e.getMessage());
@@ -202,7 +198,8 @@ public class AuthenticationController {
 				error.setMessage(e.getMessage());
 
 			}
-			if (e instanceof ConstraintViolationException || e instanceof DataIntegrityViolationException || e instanceof Exception) {
+			if (e instanceof ConstraintViolationException || e instanceof DataIntegrityViolationException
+					|| e instanceof Exception) {
 				error.setCode("409");
 				error.setMessage("This user : '" + newUser.getUsername() + "' has been already registred!");
 			}
@@ -210,6 +207,25 @@ public class AuthenticationController {
 			signUpResponse.setError(error);
 			return ResponseEntity.status(Integer.parseInt(error.getCode())).body(signUpResponse);
 
+		}
+	}
+
+	@GetMapping("/signout")
+	public Boolean signout(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Long userId = tokenProvider.getUserIdFromJWT(request.getHeader("Token"));
+			final UserCore user = this.accountService.loadUserById(userId);
+			if (user != null) {
+				this.session.removeAttribute("CurrentUser");
+				this.session.removeAttribute("jwt");
+				this.session.invalidate();
+				return true;
+			} else {
+				return false;
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return false;
 		}
 	}
 }
