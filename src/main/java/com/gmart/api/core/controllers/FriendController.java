@@ -2,7 +2,6 @@ package com.gmart.api.core.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -81,7 +80,7 @@ public class FriendController {
 	@GetMapping("/myfriends")
 	@ResponseBody
 	public List<UserCore> getFriendList(HttpServletRequest request, HttpServletResponse response) {
-		List<UserCore> friends=null;
+		List<UserCore> friends = null;
 		UserCore user = null;
 		try {
 			log.info("get Friend List started here " + request.getHeader("Token"));
@@ -96,29 +95,29 @@ public class FriendController {
 		return friends;
 	}
 
-	@GetMapping("/find-friend/{criteria}")
+	@GetMapping("/find-friends/{criteria}")
 	@ResponseBody
 	public List<UserCore> getAllSearchAccountMatches(@PathVariable String criteria, HttpServletRequest request,
 			HttpServletResponse response) {
-		List<UserCore> matchingUsersCores =null;
+		List<UserCore> matchingUsersCores = null;
 		try {
 			log.info("Find matching accounts for criteria : " + criteria);
 			matchingUsersCores = new ArrayList<>();
-			if(!StringUtils.isEmpty(criteria)) {
+			if (!StringUtils.isEmpty(criteria)) {
 				matchingUsersCores = this.accountService.getMatchingAccountList(criteria);
-				if(!CollectionUtils.isEmpty(matchingUsersCores)) {
+				if (!CollectionUtils.isEmpty(matchingUsersCores)) {
 					Long userId = jwtProvider.getUserIdFromJWT(request.getHeader("Token"));
 					final UserCore user = this.accountService.loadUserById(userId);
-					List<UserCore> filtredList =  matchingUsersCores.stream().filter(usr -> !usr.getEmail().equals(user.getEmail()))
-							  .collect(Collectors.toList());
+					List<UserCore> filtredList = matchingUsersCores.stream()
+							.filter(usr -> !usr.getEmail().equals(user.getEmail())).collect(Collectors.toList());
 					return matchingUsersCores;
 				}
 			}
-		}catch (Exception e) {
+		} catch (Exception e) {
 			log.error(e.getLocalizedMessage());
 		}
-		
-			return  matchingUsersCores;
+
+		return matchingUsersCores;
 	}
 
 	@GetMapping("/are-we-already-friends/{pseudoname}")
@@ -131,7 +130,7 @@ public class FriendController {
 			Profile profile = this.profileService.getProfileByPseudoname(pseudoname);
 			Long userId = jwtProvider.getUserIdFromJWT(request.getHeader("Token"));
 			UserCore user = this.accountService.loadUserById(userId);
-			if (profile != null ) {
+			if (profile != null) {
 				log.info("A User profile has been found for pseudoname : " + pseudoname);
 				if (!CollectionUtils.isEmpty(user.getFriends())) {
 					result = user.getFriends().stream().anyMatch(t -> t.getProfile().equals(profile));
