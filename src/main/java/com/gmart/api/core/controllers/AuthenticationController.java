@@ -35,13 +35,13 @@ import com.gmart.api.core.security.JwtTokenProvider;
 import com.gmart.api.core.services.AccountService;
 import com.gmart.api.messages.requests.SignInRequest;
 import com.gmart.api.messages.requests.SignUpRequest;
-import com.gmart.api.messages.responses.CustomError;
-import com.gmart.api.messages.responses.SignInResponse;
-import com.gmart.api.messages.responses.SignUpResponse;
-import com.gmart.api.messages.responses.UserInfo;
-import com.gmart.api.messages.responses.enums.LoginStatus;
-import com.gmart.api.messages.responses.enums.SignUpStatus;
+import com.gmart.common.enums.core.LoginStatus;
 import com.gmart.common.enums.core.RoleName;
+import com.gmart.common.enums.core.SignUpStatus;
+import com.gmart.common.messages.core.UserInfoDTO;
+import com.gmart.common.messages.core.responses.CustomError;
+import com.gmart.common.messages.core.responses.SignInResponse;
+import com.gmart.common.messages.core.responses.SignUpResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -97,13 +97,12 @@ public class AuthenticationController {
 				UserCore userCore = accountService.loadUserByUsername(loginRequest.getUsername());
 				if (userCore != null) {
 					signInResponse.setLoginStatus(LoginStatus.AUTHENTICATED);
-					UserInfo userInfo = new UserInfo();
+					UserInfoDTO userInfo = new UserInfoDTO();
 					userInfo.setId(userCore.getId());
 					userInfo.setEmail(userCore.getEmail());
 					userInfo.setFirstname(userCore.getFirstname());
 					userInfo.setLastname(userCore.getLastname());
 					userInfo.setPhone(userCore.getPhone());
-					userInfo.setRoles(userCore.getRoles());
 					userInfo.setUsername(userCore.getUsername());
 					userInfo.setPseudoname(userCore.getProfile().getPseudoname());
 					signInResponse.setAuthenticatedUser(userInfo);
