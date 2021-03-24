@@ -3,37 +3,34 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.2.1.RELEASE</version>
-		<relativePath></relativePath>
-	</parent>
 
-	<groupId>com.gmart.core</groupId>
 	<artifactId>gmart-core</artifactId>
+	<packaging>jar</packaging>
 	<name>gmart-core</name>
-	<version>0.0.1-SNAPSHOT</version>
 	<description>GMART core project</description>
 
+	<parent>
+		<groupId>com.gmart.product</groupId>
+		<artifactId>gmart-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8
+		</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<camel.version>2.25.2</camel.version>
 		<jjwt.version>0.9.0</jjwt.version>
 	</properties>
 
-	<!-- Add GMART-Common library -->
-	<repositories>
-		<repository>
-			<id>local-repository</id>
-			<url>file://${project.basedir}/repository</url>
-		</repository>
-	</repositories>
-
-
 	<dependencies>
+
 		<dependency>
 			<groupId>com.gmart.common</groupId>
 			<artifactId>gmart-common</artifactId>
-			<version>${version}</version>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
@@ -108,6 +105,18 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/javax.validation/validation-api -->
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-eureka-client -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+			<version>2.2.6.RELEASE</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -125,4 +134,5 @@
 			<url>https://jitpack.io</url>
 		</repository>
 	</distributionManagement>
+
 </project>
