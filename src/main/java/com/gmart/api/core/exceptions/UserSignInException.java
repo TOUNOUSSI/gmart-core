@@ -1,18 +1,20 @@
 package com.gmart.api.core.exceptions;
 
 import javassist.NotFoundException;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class UserSignInException extends NotFoundException {
 
 	/**
-	 * 
+	 *
 	 */
-	private static final long serialVersionUID = 1L;
-
-	String code;
+	private static final long serialVersionUID = -5546108652118406630L;
+	private String code;
 
 	public UserSignInException(String msg) {
-		// TODO Auto-generated constructor stub
 		super(msg);
 	}
 

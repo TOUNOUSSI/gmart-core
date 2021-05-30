@@ -1,4 +1,11 @@
-package com.gmart.api.core.entities;
+/*
+ *  This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/3.0/deed.en_US">Creative Commons Attribution 3.0 Unported License</a>.
+ *  Copyright © GMART, unpublished work. This computer program
+ *  includes confidential, proprietary information and is a trade secret of GMART Inc.
+ *  All use, disclosure, or reproduction is prohibited unless authorized
+ *  in writing by TOUNOUSSI Youssef. All Rights Reserved.
+ */
+package com.gmart.api.core.domain;
 
 import java.io.Serializable;
 import java.util.List;
@@ -13,7 +20,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.gmart.common.enums.core.RoleName;
+import com.gmart.api.core.enums.RoleName;
 
 import lombok.Data;
 
@@ -23,7 +30,7 @@ import lombok.Data;
 public class Role implements Serializable {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 

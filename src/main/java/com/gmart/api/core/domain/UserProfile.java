@@ -1,9 +1,15 @@
-package com.gmart.api.core.entities;
+/*
+ *  This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/3.0/deed.en_US">Creative Commons Attribution 3.0 Unported License</a>.
+ *  Copyright © GMART, unpublished work. This computer program
+ *  includes confidential, proprietary information and is a trade secret of GMART Inc.
+ *  All use, disclosure, or reproduction is prohibited unless authorized
+ *  in writing by TOUNOUSSI Youssef. All Rights Reserved.
+ */
+package com.gmart.api.core.domain;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,9 +35,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 @Entity
-@Table(name = "UserInfo")
+@Table(name = "UserProfile")
 @Data
-public class UserCore implements UserDetails, Serializable {
+public class UserProfile implements UserDetails, Serializable {
 
 	/**
 	 *
@@ -46,15 +52,15 @@ public class UserCore implements UserDetails, Serializable {
 
 	@Column(unique = true, nullable = false)
 	private String email;
-	
+
 	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinTable(name = "user_friends", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "friend_id", referencedColumnName = "id"))
-	private List<UserCore> friends = new ArrayList<>();
+	private Collection<UserProfile> friends = new HashSet<>();
 
 	@JsonIgnore
 	private String password;
-	
+
 	private String phone;
 
 	@OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
@@ -63,11 +69,12 @@ public class UserCore implements UserDetails, Serializable {
 
 	@Column(unique = true, nullable = false)
 	private String username;
-	
-	
+
+
 	@OneToOne
 	@JoinColumn(name = "profile_id",referencedColumnName = "id")
 	private Profile profile;
+
 
 	@Override
 	@JsonIgnore
@@ -76,27 +83,27 @@ public class UserCore implements UserDetails, Serializable {
 				.collect(Collectors.toList());
 	}
 
+
 	@Override
 	public boolean isAccountNonExpired() {
-		// TODO Auto-generated method stub
-		return true;
+		return false;
 	}
+
 
 	@Override
 	public boolean isAccountNonLocked() {
-		// TODO Auto-generated method stub
-		return true;
+		return false;
 	}
+
 
 	@Override
 	public boolean isCredentialsNonExpired() {
-		// TODO Auto-generated method stub
-		return true;
+		return false;
 	}
+
 
 	@Override
 	public boolean isEnabled() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 

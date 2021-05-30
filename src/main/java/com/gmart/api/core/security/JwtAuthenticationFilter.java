@@ -14,10 +14,11 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.gmart.api.core.entities.UserCore;
+import com.gmart.api.core.api.feigns.AuthorizationServiceClient;
+import com.gmart.api.core.commons.exchange.RequestExchange;
+import com.gmart.api.core.domain.UserProfile;
 import com.gmart.api.core.services.AccountService;
 
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -30,7 +31,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private AccountService accountService;// return UserPrincipal.create(user);
 
 	@Autowired
-    private JwtTokenProvider tokenProvider;
+    private AuthorizationServiceClient tokenProvider;
 
 
     @Override
@@ -38,15 +39,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String jwt = getJwtFromRequest(request);
             if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
-				Long userId = tokenProvider.getUserIdFromJWT(jwt);
-
+				String details = tokenProvider.extractDetailsFromJWT(jwt);
                 /*
                     Note that you could also encode the user's username and roles inside JWT claims
                     and create the UserDetails object by parsing those claims from the JWT.
                     That would avoid the following database hit. It's completely up to you.
                  */
-				UserCore userDetails = this.accountService.loadUserById(userId);
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+				UserProfile userDetails = this.accountService.loadUserByUsername(details);
+				request.setAttribute(RequestExchange.CURRENT_USER_HEADER, userDetails);
+
+				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -61,7 +63,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("GMART_AUTHORIZATION ")) {
-            return bearerToken.substring(7, bearerToken.length());
+            return bearerToken.substring(20, bearerToken.length());
         }
         return null;
     }
