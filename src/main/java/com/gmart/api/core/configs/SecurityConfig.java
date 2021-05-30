@@ -14,7 +14,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -39,11 +38,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
 	private AccountService accountService;
 
-    @Value("${app.jwtSecret}")
+    @Value("${gmart.jwt.secret}")
     public String secret;
 
     @Autowired
     private JwtAuthenticationEntryPoint unauthorizedHandler;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
     @Override
@@ -55,7 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder
 				.userDetailsService((UserDetailsService) accountService)
-                .passwordEncoder(passwordEncoder());
+                .passwordEncoder(passwordEncoder);
     }
 
     @Override
@@ -68,13 +70,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 						"/**/*.html", "/**/*.css", "/**/*.js", "/account/login", "/**/login*", "/**/login**",
 						"/invalidSession", "/resources/invalidSession")
 				.permitAll()
-				.antMatchers("/h2-console/**", "/h2-console", "/authentication/logout", "/authentication/login")
+				.antMatchers("/h2-console/**", "/h2-console")
 				.permitAll().antMatchers(org.springframework.http.HttpMethod.OPTIONS, "/service/**").permitAll()
-				.antMatchers(HttpMethod.POST, "/authentication/signin", "/authentication/signup","/profile/update-profile-picture","/profile/update-profile-cover").permitAll()
+				.antMatchers(HttpMethod.POST, "/account/auth/signin","/account/auth/signout", "/account/signup","/profile/update-profile-picture","/profile/update-profile-cover").permitAll()
+				.antMatchers(HttpMethod.POST, "/post/add-new-post","/comment/add-new-comment-on-post/{postID}").permitAll()
 				.antMatchers(HttpMethod.GET, "/friend/myfriends","/account/accounts").permitAll()
 				.antMatchers(HttpMethod.GET, "/authentication/signout").permitAll()
 				.antMatchers(HttpMethod.GET, "/friend/find-friends/{criteria}","/friend/are-we-already-friends/{pseudoname}"
 						,"/profile/find-my-profile","/profile/find-profile/{pseudoname}").permitAll()
+				.antMatchers(HttpMethod.GET, "/post/all-recent-posts").permitAll()
 				.antMatchers(HttpMethod.PUT, "/friend/add-new-friend/{pseudoname}").permitAll()
 				.anyRequest().authenticated().and()
 				.logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll().and().csrf().disable(); // Disabling
@@ -85,13 +89,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter();
-    }
+	@Bean
+	public JwtAuthenticationFilter jwtAuthenticationFilter() {
+		return new JwtAuthenticationFilter();
+	}
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 }
