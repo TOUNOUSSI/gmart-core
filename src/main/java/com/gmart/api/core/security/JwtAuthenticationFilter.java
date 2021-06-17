@@ -17,7 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.gmart.api.core.api.feigns.AuthorizationServiceClient;
 import com.gmart.api.core.commons.exchange.RequestExchange;
 import com.gmart.api.core.domain.UserProfile;
-import com.gmart.api.core.services.AccountService;
+import com.gmart.api.core.service.AccountService;
 
 import lombok.extern.slf4j.Slf4j;
 
