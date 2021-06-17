@@ -5,22 +5,28 @@
  *  All use, disclosure, or reproduction is prohibited unless authorized
  *  in writing by TOUNOUSSI Youssef. All Rights Reserved.
  */
-package com.gmart.api.core.repositories;
+package com.gmart.api.core.repository.notification;
 
-import java.util.List;
+import java.util.Set;
+
+import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.gmart.api.core.domain.Profile;
-import com.gmart.api.core.domain.UserProfile;
+import com.gmart.api.core.domain.notification.Notification;
 
 
+/**
+ * @author <a href="mailto:youssef.tounoussi@gmail.com">TOUNOUSSI Youssef</a>
+ * @create 10 juin 2021
+ **/
+@Transactional
 @Repository
-public interface UserRepository extends JpaRepository<UserProfile, String> {
+public interface NotificationRepository extends JpaRepository<Notification, String> {
 
-	public UserProfile findByUsername(String username);
-	public UserProfile findByProfile(Profile profile);
-	public List<UserProfile> findByUsernameContainingIgnoreCase(String username);
+	Set<Notification> findAllById(String id);
+	Set<Notification> findAllByProfileOrderByCheckedAscNotificationDateDesc(Profile profile);
 
 }
