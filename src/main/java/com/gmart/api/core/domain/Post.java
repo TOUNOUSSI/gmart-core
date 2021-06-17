@@ -66,6 +66,13 @@ public class Post implements Serializable {
 	@JoinColumn(name = "post_id", referencedColumnName = "id")
 	private Collection<Comment> comments = new HashSet<>();
 
+
+	@LazyCollection(LazyCollectionOption.TRUE)
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "post_id", referencedColumnName = "id")
+	private Collection<Reaction> reactions = new HashSet<>();
+
+
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "profile_id", referencedColumnName = "id")
 	private Profile profile = new Profile();

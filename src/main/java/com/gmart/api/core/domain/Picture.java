@@ -13,6 +13,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -26,7 +27,11 @@ import org.hibernate.annotations.GenericGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gmart.common.enums.core.PictureType;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * @author <a href="mailto:youssef.tounoussi@gmail.com">TOUNOUSSI Youssef</a>
@@ -34,7 +39,11 @@ import lombok.Data;
  **/
 @Entity
 @Table(name = "PICTURE")
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(callSuper = false)
+@AllArgsConstructor
+@NoArgsConstructor
 public class Picture implements Serializable {
 
 	/**
@@ -57,14 +66,10 @@ public class Picture implements Serializable {
 	private byte[] data;
 
 	@JsonIgnore
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "comment_id", referencedColumnName = "id")
 	@Null
 	private Set<Comment> comments = new HashSet<>();
-
-	public Picture() {
-
-	}
 
 	public Picture(String fileName, String fileType, byte[] data) {
 		this.fileName = fileName;

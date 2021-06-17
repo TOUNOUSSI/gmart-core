@@ -18,25 +18,34 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Table(name = "UserProfile")
-@Data
+@Table(name = "USER_PROFILE")
+@Getter
+@Setter
+@EqualsAndHashCode(callSuper = false)
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserProfile implements UserDetails, Serializable {
 
 	/**
@@ -45,8 +54,10 @@ public class UserProfile implements UserDetails, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+	@GeneratedValue(generator = "uuid")
+	@GenericGenerator(name = "uuid", strategy = "uuid2")
+	private String id;
+
 	private String lastname;
 	private String firstname;
 
@@ -54,27 +65,32 @@ public class UserProfile implements UserDetails, Serializable {
 	private String email;
 
 	@JsonIgnore
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinTable(name = "user_friends", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "friend_id", referencedColumnName = "id"))
-	private Collection<UserProfile> friends = new HashSet<>();
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@EqualsAndHashCode.Exclude
+	@JoinTable(name = "USER_FRIENDS", joinColumns = {
+			@JoinColumn(name = "friend_id", referencedColumnName = "id") }, inverseJoinColumns = {
+					@JoinColumn(name = "user_id", referencedColumnName = "id") })
+	private Set<UserProfile> friends = new HashSet<>();
 
 	@JsonIgnore
 	private String password;
 
 	private String phone;
 
+	@JsonIgnore
 	@OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
-	@JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+	@JoinTable(name = "users_roles", joinColumns = {
+			@JoinColumn(table = "USER_PROFILE", name = "user_id", referencedColumnName = "id") }, inverseJoinColumns = {
+					@JoinColumn(table = "ROLES", name = "role_id", referencedColumnName = "id"), })
 	private Set<Role> roles;
 
 	@Column(unique = true, nullable = false)
 	private String username;
 
-
 	@OneToOne
-	@JoinColumn(name = "profile_id",referencedColumnName = "id")
-	private Profile profile;
-
+	@JoinColumn(name = "profile_id", referencedColumnName = "id")
+	@EqualsAndHashCode.Exclude
+	private Profile profile = new Profile();
 
 	@Override
 	@JsonIgnore
@@ -83,24 +99,20 @@ public class UserProfile implements UserDetails, Serializable {
 				.collect(Collectors.toList());
 	}
 
-
 	@Override
 	public boolean isAccountNonExpired() {
 		return false;
 	}
-
 
 	@Override
 	public boolean isAccountNonLocked() {
 		return false;
 	}
 
-
 	@Override
 	public boolean isCredentialsNonExpired() {
 		return false;
 	}
-
 
 	@Override
 	public boolean isEnabled() {

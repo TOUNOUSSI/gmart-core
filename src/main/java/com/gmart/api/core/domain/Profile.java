@@ -11,7 +11,6 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,12 +25,22 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gmart.api.core.domain.notification.Notification;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "PROFILE")
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(callSuper = false)
+@AllArgsConstructor
+@NoArgsConstructor
 public class Profile implements Serializable {
 
 	/**
@@ -46,25 +55,42 @@ public class Profile implements Serializable {
 
 	@Column(unique = true, nullable = false)
 	private String pseudoname;
+
+	@Column(unique = true, nullable = false)
+	private String username;
+
 	private String firstname;
 	private String lastname;
 	private String nickname;
 	private String phone;
 	private String profileDescription;
 
+	@JsonProperty("avatar")
 	@Lob
 	@Column(name = "AVATAR_PAYLOAD")
 	private byte[] avatarPayload;
 
-	@LazyCollection(LazyCollectionOption.TRUE)
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@OneToMany
 	@JoinColumn(name = "profile_id", referencedColumnName = "id")
 	private Collection<Picture> pictures = new HashSet<>();
 
 	@JsonIgnore
-	@LazyCollection(LazyCollectionOption.TRUE)
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@OneToMany
 	@JoinColumn(name = "profile_id", referencedColumnName = "id")
 	private Collection<Post> posts = new HashSet<>();
 
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@JsonIgnore
+	@OneToMany
+	@JoinColumn(name = "profile_id", referencedColumnName = "id")
+	@EqualsAndHashCode.Exclude
+	private Collection<Notification> notifications = new HashSet<>();
+
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@JsonIgnore
+	@OneToMany
+	@JoinColumn(name = "profile_id", referencedColumnName = "id")
+	private Collection<FriendRequest> friendRequests = new HashSet<>();
 }
