@@ -36,10 +36,10 @@ import com.gmart.api.core.domain.Profile;
 import com.gmart.api.core.domain.Role;
 import com.gmart.api.core.domain.UserProfile;
 import com.gmart.api.core.enums.RoleName;
-import com.gmart.api.core.exceptions.UserSignInException;
-import com.gmart.api.core.exceptions.UserSignUpException;
-import com.gmart.api.core.repositories.ProfileRepository;
-import com.gmart.api.core.services.AccountService;
+import com.gmart.api.core.exception.UserSignInException;
+import com.gmart.api.core.exception.UserSignUpException;
+import com.gmart.api.core.repository.profile.ProfileRepository;
+import com.gmart.api.core.service.AccountService;
 import com.gmart.common.enums.core.LoginStatus;
 import com.gmart.common.enums.core.SignUpStatus;
 import com.gmart.common.messages.core.UserInfoDTO;
@@ -165,9 +165,10 @@ public class AccountController {
 				profile.setFirstname(signUpRequest.getFirstname());
 				profile.setLastname(signUpRequest.getLastname());
 				profile.setPhone(signUpRequest.getPhone());
+				profile.setUsername(signUpRequest.getUsername());
 
-				profileRepository.saveAndFlush(profile);
-				userTobeRegistred.setProfile(profile);
+				Profile savedProfile = profileRepository.saveAndFlush(profile);
+				userTobeRegistred.setProfile(savedProfile);
 				// To be modified, just for test issue
 				Set<Role> roles = new HashSet<>();
 				Role userRole = new Role();

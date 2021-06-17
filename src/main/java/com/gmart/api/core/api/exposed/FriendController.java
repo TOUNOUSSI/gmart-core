@@ -9,7 +9,7 @@ package com.gmart.api.core.api.exposed;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,10 +28,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gmart.api.core.api.feigns.AuthorizationServiceClient;
+import com.gmart.api.core.domain.FriendRequest;
 import com.gmart.api.core.domain.Profile;
 import com.gmart.api.core.domain.UserProfile;
-import com.gmart.api.core.services.AccountService;
-import com.gmart.api.core.services.ProfileService;
+import com.gmart.api.core.service.AccountService;
+import com.gmart.api.core.service.profile.ProfileService;
+import com.gmart.api.core.service.request.FriendRequestService;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -55,11 +57,48 @@ public class FriendController {
 	private ProfileService profileService;
 
 	@Autowired
+	private FriendRequestService friendRequestService;
+
+	@Autowired
 	private AuthorizationServiceClient tokenProvider;
 
 	@PutMapping("/add-new-friend/{pseudoname}")
 	@ResponseBody
-	public Boolean addUserToFrienList(@PathVariable("pseudoname") String pseudoname, HttpServletRequest request,
+	public UserProfile addUserToFrienList(@PathVariable("pseudoname") String pseudoname, HttpServletRequest request,
+			HttpServletResponse response) {
+		UserProfile requesterUserprofile = null;
+		UserProfile friendToBeAdd = null;
+		log.info("Add new friend pseudo: " + pseudoname);
+
+		Profile profile = this.profileService.getProfileByPseudoname(pseudoname);
+
+		try {
+			if (profile != null) {
+				String username = tokenProvider.extractDetailsFromJWT(request.getHeader("Token"));
+				requesterUserprofile = this.accountService.loadUserByUsername(username);
+
+				if (requesterUserprofile != null) {
+					friendToBeAdd = this.accountService.loadUserByProfile(profile);
+					if (friendToBeAdd != null) {
+						friendToBeAdd.getFriends().add(requesterUserprofile);
+						UserProfile updatedFriendUserProfile = this.accountService.update(friendToBeAdd);
+						requesterUserprofile.getFriends().add(updatedFriendUserProfile);
+						this.accountService.update(requesterUserprofile);
+						log.info("Updating friend request list finished");
+
+					}
+				}
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage());
+		}
+
+		return requesterUserprofile;
+	}
+
+	@PutMapping("/add-friend-request/{pseudoname}")
+	@ResponseBody
+	public UserProfile addFriendRequest(@PathVariable("pseudoname") String pseudoname, HttpServletRequest request,
 			HttpServletResponse response) {
 		UserProfile user = null;
 		UserProfile friendToBeAdd = null;
@@ -75,21 +114,19 @@ public class FriendController {
 				if (user != null) {
 					friendToBeAdd = this.accountService.loadUserByProfile(profile);
 					if (friendToBeAdd != null) {
-						user.getFriends().add(friendToBeAdd);
-						this.accountService.update(user);
-						log.info("Updating friend list finished");
+						FriendRequest friendRequest = new FriendRequest();
+						friendRequest.setProfile(user.getProfile());
+						this.friendRequestService.save(friendRequest);
+						log.info("Updating friend request list finished");
 
-					} else {
-						return false;
 					}
 				}
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage());
-			return false;
 		}
 
-		return true;
+		return friendToBeAdd;
 	}
 
 	@GetMapping("/are-we-already-friends/{pseudoname}")
@@ -150,14 +187,16 @@ public class FriendController {
 
 	@GetMapping("/myfriends")
 	@ResponseBody
-	public List<UserProfile> getFriendList(HttpServletRequest request, HttpServletResponse response) {
-		List<UserProfile> friends = null;
-		UserProfile user = null;
+	public Set<UserProfile> getFriendList(HttpServletRequest request, HttpServletResponse response) {
+		Set<UserProfile> friends = null;
+		UserProfile friend = null;
 		try {
 			log.info("get Friend List started here " + request.getHeader("Token"));
 			String username = tokenProvider.extractDetailsFromJWT(request.getHeader("Token"));
-			user = this.accountService.loadUserByUsername(username);
-			friends = user.getFriends().stream().distinct().collect(Collectors.toList());
+			friend = this.accountService.loadUserByUsername(username);
+			if (friend != null) {
+				return friend.getFriends();
+			}
 
 		} catch (Exception e) {
 			log.error(e.getMessage());

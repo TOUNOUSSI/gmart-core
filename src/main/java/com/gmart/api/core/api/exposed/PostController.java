@@ -26,8 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.gmart.api.core.api.feigns.AuthorizationServiceClient;
 import com.gmart.api.core.domain.Post;
 import com.gmart.api.core.domain.UserProfile;
-import com.gmart.api.core.services.AccountService;
-import com.gmart.api.core.services.PostService;
+import com.gmart.api.core.service.AccountService;
+import com.gmart.api.core.service.PostService;
 import com.gmart.common.messages.core.PostDTO;
 
 import lombok.extern.slf4j.Slf4j;

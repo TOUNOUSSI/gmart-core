@@ -26,11 +26,11 @@ import com.gmart.api.core.domain.Picture;
 import com.gmart.api.core.domain.Post;
 import com.gmart.api.core.domain.Profile;
 import com.gmart.api.core.domain.UserProfile;
-import com.gmart.api.core.services.AccountService;
-import com.gmart.api.core.services.CommentService;
-import com.gmart.api.core.services.PictureService;
-import com.gmart.api.core.services.PostService;
-import com.gmart.api.core.services.ProfileService;
+import com.gmart.api.core.service.AccountService;
+import com.gmart.api.core.service.CommentService;
+import com.gmart.api.core.service.PictureService;
+import com.gmart.api.core.service.PostService;
+import com.gmart.api.core.service.profile.ProfileService;
 import com.gmart.common.messages.core.CommentRequestDTO;
 
 import lombok.extern.slf4j.Slf4j;
