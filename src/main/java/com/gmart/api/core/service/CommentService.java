@@ -5,12 +5,12 @@
  *  All use, disclosure, or reproduction is prohibited unless authorized
  *  in writing by TOUNOUSSI Youssef. All Rights Reserved.
  */
-package com.gmart.api.core.services;
+package com.gmart.api.core.service;
 
 import org.springframework.stereotype.Service;
 
 import com.gmart.api.core.domain.Comment;
-import com.gmart.api.core.repositories.CommentRepository;
+import com.gmart.api.core.repository.CommentRepository;
 
 import lombok.Data;
 

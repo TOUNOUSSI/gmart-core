@@ -5,27 +5,29 @@
  *  All use, disclosure, or reproduction is prohibited unless authorized
  *  in writing by TOUNOUSSI Youssef. All Rights Reserved.
  */
-package com.gmart.api.core.services;
+package com.gmart.api.core.service.request;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.gmart.api.core.domain.Picture;
-import com.gmart.api.core.repositories.PictureRepository;
+import com.gmart.api.core.domain.FriendRequest;
+import com.gmart.api.core.repository.request.FriendRequestRepository;
 
 import lombok.Data;
 
 /**
  * @author <a href="mailto:youssef.tounoussi@gmail.com">TOUNOUSSI Youssef</a>
- * @create 27 mai 2021
+ * @create 14 juin 2021
  **/
 
 @Data
 @Service
-public class PictureService {
+public class FriendRequestService {
 
-	private PictureRepository pictureRespository;
+	@Autowired
+	private FriendRequestRepository friendRequestRepository;
 
-	public Picture findByID(String ID) {
-		return this.pictureRespository.getOne(ID);
+	public FriendRequest save(FriendRequest friendRequest) {
+		return this.friendRequestRepository.save(friendRequest);
 	}
 }

@@ -1,14 +1,18 @@
-package com.gmart.api.core.services;
+package com.gmart.api.core.service;
 
 import java.util.Collection;
+
+import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.gmart.api.core.domain.Profile;
 import com.gmart.api.core.domain.UserProfile;
-import com.gmart.api.core.repositories.UserRepository;
+import com.gmart.api.core.repository.UserRepository;
 
 import lombok.Data;
 
@@ -18,14 +22,17 @@ public class AccountService implements UserDetailsService {
 	@Autowired
 	private UserRepository userRepository;
 
+	@Transactional(readOnly = true,rollbackFor = Exception.class, noRollbackFor = EntityNotFoundException.class, isolation = Isolation.READ_COMMITTED)
 	public UserProfile loadUserById(String id) {
 		return this.userRepository.getOne(id);
 	}
 
+	@Transactional(readOnly = true,rollbackFor = Exception.class, noRollbackFor = EntityNotFoundException.class, isolation = Isolation.READ_COMMITTED)
 	public Collection<UserProfile> getAllUsers() {
 		return this.userRepository.findAll();
 	}
 
+	@Transactional(readOnly = true,rollbackFor = Exception.class, noRollbackFor = EntityNotFoundException.class, isolation = Isolation.READ_COMMITTED)
 	public Collection<UserProfile> getMatchingUsersList(String criteria) {
 		return this.userRepository.findByUsernameContainingIgnoreCase(criteria);
 	}

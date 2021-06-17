@@ -5,7 +5,7 @@
  *  All use, disclosure, or reproduction is prohibited unless authorized
  *  in writing by TOUNOUSSI Youssef. All Rights Reserved.
  */
-package com.gmart.api.core.services;
+package com.gmart.api.core.service;
 
 import java.util.Set;
 
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.gmart.api.core.domain.Post;
 import com.gmart.api.core.domain.Profile;
-import com.gmart.api.core.repositories.PostRepository;
+import com.gmart.api.core.repository.PostRepository;
 
 import lombok.Data;
 
