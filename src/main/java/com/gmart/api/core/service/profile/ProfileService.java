@@ -45,7 +45,7 @@ public class ProfileService extends AbstractUserProfileService<Profile, String>{
 
 		Picture picture = null;
 		try {
-			picture = this.fileStorageService.storeFile(file);
+			picture = this.fileStorageService.storeFileAsPicture(file);
 			picture.setPictureType(PictureType.COVER_PICTURE);
 			profile.getPictures().add(picture);
 
@@ -68,10 +68,10 @@ public class ProfileService extends AbstractUserProfileService<Profile, String>{
 
 		Picture picture = null;
 		try {
-			picture = this.fileStorageService.storeFile(file);
+			picture = this.fileStorageService.storeFileAsPicture(file);
 			picture.setPictureType(PictureType.PROFILE_PICTURE);
 			profile.getPictures().add(picture);
-			profile.setAvatarPayload(this.fileStorageService.resize(file, 25, 25));
+			profile.setAvatarPayload(this.fileStorageService.resize(file, 254, 254));
 			profileRepository.saveAndFlush(profile);
 
 		} catch (FileStorageException e) {
@@ -101,5 +101,14 @@ public class ProfileService extends AbstractUserProfileService<Profile, String>{
 	@Override
 	public Set<Profile> findAllById(String id) {
 		return profileRepository.findAllById(id);
+	}
+
+	/**
+	 *
+	 * @param username
+	 * @return
+	 */
+	public byte[] getAvatarPayloadByUsername(String username){
+		return profileRepository.findAvatarPayloadByUsername(username);
 	}
 }

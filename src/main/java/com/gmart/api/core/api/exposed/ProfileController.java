@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,124 +35,137 @@ import com.gmart.common.messages.core.CustomProfileDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+
 /**
  * @author <a href="mailto:youssef.tounoussi@gmail.com">TOUNOUSSI Youssef</a>
  * @create 29 mars 2021
  **/
 @RestController
 @RequestMapping("profile")
-@CrossOrigin(origins = { "*" })
+@CrossOrigin(origins = {"*"})
 @Scope("session")
 @Slf4j
 public class ProfileController {
 
-	@Autowired
-	private ProfileService profileService;
+    @Autowired
+    private ProfileService profileService;
 
-	@Autowired
-	private AuthorizationServiceClient tokenProvider;
+    @Autowired
+    private AuthorizationServiceClient tokenProvider;
 
-	/**
-	 * @todo use ResponseEntity<DTO> instead of returning domain objects
-	 */
+    /**
+     * @todo use ResponseEntity<DTO> instead of returning domain objects
+     */
 
 
-	/**
-	 *
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	@GetMapping("/find-my-profile")
-	@ResponseBody
-	public Profile getMyProfile(HttpServletRequest request, HttpServletResponse response) {
-		log.info("Loading my profile...");
-		log.info("Token founded : " + request.getHeader("Token"));
-		String username = tokenProvider.extractDetailsFromJWT(request.getHeader("Token"));
-		return this.profileService.findByUsername(username);
-	}
+    /**
+     * @param request
+     * @param response
+     * @return
+     */
+    @GetMapping("/find-my-profile")
+    @ResponseBody
+    public Profile getMyProfile(HttpServletRequest request, HttpServletResponse response) {
+        log.info("Loading my profile...");
+        log.info("Token founded : " + request.getHeader("Token"));
+        String username = tokenProvider.extractDetailsFromJWT(request.getHeader("Token"));
+        return this.profileService.findByUsername(username);
+    }
 
-	/**
-	 *
-	 * @param pseudoname
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	@GetMapping("/find-profile/{pseudoname}")
-	public Profile getProfile(@PathVariable String pseudoname, HttpServletRequest request,
-			HttpServletResponse response) {
-		log.info("Pseudoname param founded : " + pseudoname);
-		return this.profileService.getProfileByPseudoname(pseudoname);
-	}
+    /**
+     * @param pseudoname
+     * @param request
+     * @param response
+     * @return
+     */
+    @GetMapping("/find-profile/{pseudoname}")
+    public Profile getProfile(@PathVariable String pseudoname, HttpServletRequest request,
+                              HttpServletResponse response) {
+        log.info("Pseudoname param founded : " + pseudoname);
+        return this.profileService.getProfileByPseudoname(pseudoname);
+    }
 
-	/**
-	 *
-	 * @param file
-	 * @param redirectAttributes
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	@PostMapping("/update-profile-cover")
-	@ResponseBody
-	public Picture updateProfileCover(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes,
-			HttpServletRequest request, HttpServletResponse response) {
-		log.info("Recieved inside core Profile : " + file.getName());
-		String username = tokenProvider.extractDetailsFromJWT(request.getHeader("Token"));
-		if(!StringUtils.isEmpty(username)) {
-			Profile profile = this.profileService.findByUsername(username);
-			if(profile != null) {
-				return this.profileService.updateProfileCover(profile, file);
-			}
-		}
-		return null;
-	}
+    /**
+     * @param file
+     * @param redirectAttributes
+     * @param request
+     * @param response
+     * @return
+     */
+    @PostMapping("/update-profile-cover")
+    @ResponseBody
+    public Picture updateProfileCover(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes,
+                                      HttpServletRequest request, HttpServletResponse response) {
+        log.info("Recieved inside core Profile : " + file.getName());
+        String username = tokenProvider.extractDetailsFromJWT(request.getHeader("Token"));
+        if (!StringUtils.isEmpty(username)) {
+            Profile profile = this.profileService.findByUsername(username);
+            if (profile != null) {
+                return this.profileService.updateProfileCover(profile, file);
+            }
+        }
+        return null;
+    }
 
-	/**
-	 *
-	 * @param file
-	 * @param redirectAttributes
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	@PostMapping("/update-profile-picture")
-	@ResponseBody
-	public Picture updateProfilePicture(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes,
-			HttpServletRequest request, HttpServletResponse response) {
-		log.info("Recieved inside core Profile : " + file.getName());
-		String username = tokenProvider.extractDetailsFromJWT(request.getHeader("Token"));
-		if(!StringUtils.isEmpty(username)) {
-			Profile profile = this.profileService.findByUsername(username);
-			if(profile != null) {
-				return this.profileService.updateProfilePicture(profile, file);
-			}
-		}
-		return null;
-	}
+    /**
+     * @param file
+     * @param redirectAttributes
+     * @param request
+     * @param response
+     * @return
+     */
+    @PostMapping("/update-profile-picture")
+    @ResponseBody
+    public Picture updateProfilePicture(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes,
+                                        HttpServletRequest request, HttpServletResponse response) {
+        log.info("Recieved inside core Profile : " + file.getName());
+        String username = tokenProvider.extractDetailsFromJWT(request.getHeader("Token"));
+        if (!StringUtils.isEmpty(username)) {
+            Profile profile = this.profileService.findByUsername(username);
+            if (profile != null) {
+                return this.profileService.updateProfilePicture(profile, file);
+            }
+        }
+        return null;
+    }
 
-	/**
-	 * Find Custom Profile by username criteria
-	 * @param username
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	@GetMapping("/find-custom-profile-by-username/{username}")
-	public CustomProfileDTO findCustomProfileByUsername(@PathVariable String username, HttpServletRequest request,
-			HttpServletResponse response) {
-		CustomProfileDTO customProfileDTO = new CustomProfileDTO();
-		Profile profile = this.profileService.findByUsername(username);
-		if (profile != null) {
-			customProfileDTO.setFirstname(profile.getFirstname());
-			customProfileDTO.setLastname(profile.getLastname());
-			customProfileDTO.setAvatar(profile.getAvatarPayload());
-			customProfileDTO.setUsername(username);
-			customProfileDTO.setPseudoname(profile.getPseudoname());
-		}
+    /**
+     * Find Custom Profile by username criteria
+     *
+     * @param username
+     * @param request
+     * @param response
+     * @return
+     */
+    @GetMapping("/find-custom-profile-by-username/{username}")
+    public CustomProfileDTO findCustomProfileByUsername(@PathVariable String username, HttpServletRequest request,
+                                                        HttpServletResponse response) {
+        CustomProfileDTO customProfileDTO = new CustomProfileDTO();
+        Profile profile = this.profileService.findByUsername(username);
+        if (profile != null) {
+            customProfileDTO.setFirstname(profile.getFirstname());
+            customProfileDTO.setLastname(profile.getLastname());
+            customProfileDTO.setAvatar(profile.getAvatarPayload());
+            customProfileDTO.setUsername(username);
+            customProfileDTO.setPseudoname(profile.getPseudoname());
+        }
 
-		return customProfileDTO;
-	}
+        return customProfileDTO;
+    }
 
+    /**
+     * @param username
+     * @return
+     */
+    @GetMapping(value="/find-avatar-payload-by-username/{username}")
+    public @ResponseBody ResponseEntity<InputStreamResource> findAvatarPayloadByUsername(@PathVariable String username) {
+        byte[] payload= this.profileService.getAvatarPayloadByUsername(username);
+        return ResponseEntity.ok()
+                .contentLength(payload.length)
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(new InputStreamResource(new ByteArrayInputStream(payload)));
+    }
 }

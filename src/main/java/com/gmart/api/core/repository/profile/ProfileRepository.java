@@ -9,6 +9,8 @@ package com.gmart.api.core.repository.profile;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +19,15 @@ import com.gmart.api.core.domain.Profile;
 
 @Transactional(rollbackFor = Exception.class, noRollbackFor = EntityNotFoundException.class, isolation = Isolation.READ_COMMITTED)
 @Repository
-public interface ProfileRepository extends TUserProfileRepository<Profile>{
-	public Profile findByPseudoname(String pseudoname);
+public interface ProfileRepository extends TUserProfileRepository<Profile> {
+    Profile findByPseudoname(String pseudoname);
+
+    /**
+     * Return AvatarPayload
+     *
+     * @param username
+     * @return
+     */
+    @Query(name = "findAvatarPayloadByUsername", value = "SELECT avatarPayload FROM Profile WHERE username =:username ")
+    byte[] findAvatarPayloadByUsername(@Param("username") String username);
 }

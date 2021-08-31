@@ -59,10 +59,19 @@ public class Profile implements Serializable {
 	@Column(unique = true, nullable = false)
 	private String username;
 
+	@JsonProperty("firstname")
 	private String firstname;
+
+	@JsonProperty("lastname")
 	private String lastname;
+
+	@JsonProperty("nickname")
 	private String nickname;
+
+	@JsonProperty("phone")
 	private String phone;
+
+	@JsonProperty("profileDescription")
 	private String profileDescription;
 
 	@JsonProperty("avatar")
