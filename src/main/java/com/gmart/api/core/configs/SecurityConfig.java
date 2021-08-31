@@ -80,7 +80,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 						"/profile/find-profile/{pseudoname}")
 				.permitAll()
 				.antMatchers(HttpMethod.GET, "/post/all-recent-posts",
-						"/profile/find-custom-profile-by-username/{username}", "/notification/all/{username}")
+						"/profile/find-custom-profile-by-username/{username}","/profile/find-avatar-payload-by-username/{username}", "/notification/all/{username}")
 				.permitAll()
 				.antMatchers(HttpMethod.DELETE,"/notification/delete/{notificationID}").permitAll()
 				.antMatchers(HttpMethod.PUT, "/friend/add-new-friend/{pseudoname}", "/add-friend-request/{pseudoname}",
