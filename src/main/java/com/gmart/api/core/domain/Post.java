@@ -12,18 +12,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
@@ -60,6 +49,11 @@ public class Post implements Serializable {
 	private Date postDate = new Date();
 
 	private String description;
+
+	@LazyCollection(LazyCollectionOption.TRUE)
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "post_id", referencedColumnName = "id")
+	private Collection<Picture> pictures= new HashSet<>();
 
 	@LazyCollection(LazyCollectionOption.TRUE)
 	@OneToMany(cascade = CascadeType.ALL)
